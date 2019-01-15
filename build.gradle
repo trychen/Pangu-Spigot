@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+
+group 'cn.mccraft.pangu'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
+    implementation 'com.github.trychen:ByteDataSteam:90cee09a7e'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
