@@ -1,6 +1,4 @@
-package cn.mccraft.pangu.spigot;
-
-import javafx.geometry.Side;
+package cn.mccraft.pangu.spigot.client;
 
 import java.lang.annotation.*;
 

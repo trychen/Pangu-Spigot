@@ -1,4 +1,4 @@
-package cn.mccraft.pangu.spigot;
+package cn.mccraft.pangu.spigot.client;
 
 import com.github.mouse0w0.fastreflection.FastReflection;
 import com.github.mouse0w0.fastreflection.MethodAccessor;
@@ -16,10 +16,11 @@ public class RemoteMessage {
     private Object instance;
     private MethodAccessor methodAccessor;
 
-    public RemoteMessage(String channel, int id, Method method) throws Exception {
+    public RemoteMessage(String channel, int id, Method method, Object instance) throws Exception {
         this.channel = channel;
         this.id = id;
-        if (method.getParameterCount() > 0 || method.getParameterTypes()[0] == Player.class) {
+        this.instance = instance;
+        if (method.getParameterCount() > 0 && method.getParameterTypes()[0] == Player.class) {
             withPlayer = true;
             types = Arrays.copyOfRange(method.getParameterTypes(), 1, method.getParameterTypes().length);
         } else {

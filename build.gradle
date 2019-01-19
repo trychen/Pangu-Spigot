@@ -15,7 +15,17 @@ repositories {
 
 dependencies {
     implementation "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
-    implementation 'com.github.trychen:ByteDataSteam:90cee09a7e'
-    implementation 'com.github.Mouse0w0:FastReflection:1.0.1'
+    embed 'com.github.trychen:ByteDataSteam:90cee09a7e'
+    embed 'com.github.Mouse0w0:FastReflection:1.0.1'
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
+
+jar {
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }
