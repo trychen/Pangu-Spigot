@@ -45,7 +45,7 @@ public enum RemoteManager implements PluginMessageListener {
         if (registeredChannel.contains(channel)) return;
         Bukkit.getMessenger().registerIncomingPluginChannel(PanguSpigot.getInstance(), channel, this);
         registeredChannel.add(channel);
-        PanguSpigot.getInstance().getLogger().info("成功注册对外通讯通道 " + channel);
+        PanguSpigot.getInstance().getLogger().info("成功注册对内通讯通道 " + channel);
     }
 
     public void injectMessage(RemoteMessage message, Player player, byte[] in) {

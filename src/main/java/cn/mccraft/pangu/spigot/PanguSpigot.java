@@ -18,6 +18,7 @@ public class PanguSpigot extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
+        Test test = new Test();
+        test.init();
     }
 }
