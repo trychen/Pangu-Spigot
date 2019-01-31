@@ -57,6 +57,7 @@ public enum RemoteManager implements PluginMessageListener {
                 for (int i = 0; i < deserialize.length; i++) {
                     objects[i + 1] = deserialize[i];
                 }
+                objects[0] = player;
             } else objects = ByteSerialization.deserialize(in, message.getTypes());
 
             message.getMethodAccessor().invoke(message.getInstance(), objects);
