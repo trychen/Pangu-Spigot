@@ -6,12 +6,13 @@ import com.trychen.bytedatastream.ByteSerialization;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 
 public class RemoteMessage {
     private String channel;
     private int id;
-    private Class[] types;
+    private Type[] types;
     private boolean withPlayer;
     private Object instance;
     private MethodAccessor methodAccessor;
@@ -20,12 +21,12 @@ public class RemoteMessage {
         this.channel = channel;
         this.id = id;
         this.instance = instance;
-        if (method.getParameterCount() > 0 && method.getParameterTypes()[0] == Player.class) {
+        if (method.getParameterCount() > 0 && method.getGenericParameterTypes()[0] == Player.class) {
             withPlayer = true;
-            types = Arrays.copyOfRange(method.getParameterTypes(), 1, method.getParameterTypes().length);
+            types = Arrays.copyOfRange(method.getGenericParameterTypes(), 1, method.getParameterTypes().length);
         } else {
             withPlayer = false;
-            types = method.getParameterTypes();
+            types = method.getGenericParameterTypes();
         }
 
         methodAccessor = FastReflection.create(method);
@@ -39,7 +40,7 @@ public class RemoteMessage {
         return id;
     }
 
-    public Class[] getTypes() {
+    public Type[] getTypes() {
         return types;
     }
 
