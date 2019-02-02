@@ -3,3 +3,5 @@ main: cn.mccraft.pangu.spigot.PanguSpigot
 version: 1.2
 
 author: Trychen
+
+depends: [ProtocolLib]

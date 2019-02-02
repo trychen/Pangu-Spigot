@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.spigot;
 
+import cn.mccraft.pangu.spigot.client.RemoteManager;
 import cn.mccraft.pangu.spigot.data.ByteSerializers;
 import org.bukkit.plugin.java.JavaPlugin;
 
