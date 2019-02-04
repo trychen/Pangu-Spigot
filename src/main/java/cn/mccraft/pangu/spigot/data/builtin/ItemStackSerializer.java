@@ -42,6 +42,7 @@ public enum ItemStackSerializer implements ByteSerializer<ItemStack>, ByteDeseri
             out.writeByte(item.getAmount());
             out.writeShort(item.getDurability());
             NbtBase<?> nbtBase = getStackModifier(item).read(0);
+            if (nbtBase == null) nbtBase = NbtFactory.ofCompound("");
             NbtBinarySerializer.DEFAULT.serialize(nbtBase, out);
         } else {
             out.writeShort(-1);
