@@ -18,7 +18,6 @@ repositories {
 
 configurations {
     embed
-    api.extendsFrom(embed)
 }
 
 dependencies {
@@ -26,6 +25,7 @@ dependencies {
     embed "com.github.Mouse0w0:FastReflection:1.0.1"
     api "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
     api "com.comphenix.protocol:ProtocolLib:4.4.0"
+    configurations.api.extendsFrom(configurations.embed)
 }
 
 task embedJar(type: Jar, dependsOn: 'jar') {
