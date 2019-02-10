@@ -1,13 +1,14 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'cn.mccraft.pangu'
-version '2.1'
+version '2.2'
 
 sourceCompatibility = 1.8
 
 repositories {
+    jcenter()
     mavenCentral()
     maven { url 'https://jitpack.io' }
     maven { url "http://repo.dmulloy2.net/nexus/repository/public/" }
@@ -17,16 +18,22 @@ repositories {
 
 configurations {
     embed
-    compile.extendsFrom(embed)
+    api.extendsFrom(embed)
 }
 
 dependencies {
-    embed 'com.github.trychen:ByteDataStream:1.2-SNAPSHOT'
-    embed 'com.github.Mouse0w0:FastReflection:1.0.1'
-    api 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
-    api 'com.comphenix.protocol:ProtocolLib:4.4.0'
+    embed "com.github.trychen:ByteDataStream:1.2-SNAPSHOT"
+    embed "com.github.Mouse0w0:FastReflection:1.0.1"
+    api "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
+    api "com.comphenix.protocol:ProtocolLib:4.4.0"
 }
 
-jar {
+task embedJar(type: Jar, dependsOn: 'jar') {
+    from sourceSets.main.output
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+    classifier "packaged"
+}
+
+artifacts {
+    archives embedJar
 }
