@@ -1,7 +1,6 @@
 package cn.mccraft.pangu.spigot.server;
 
-import cn.mccraft.pangu.spigot.PanguSpigot;
-import cn.mccraft.pangu.spigot.client.Remote;
+import cn.mccraft.pangu.spigot.Remote;
 import com.trychen.bytedatastream.ByteSerialization;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

@@ -1,4 +1,4 @@
-package cn.mccraft.pangu.spigot.client;
+package cn.mccraft.pangu.spigot;
 
 import java.lang.annotation.*;
 
