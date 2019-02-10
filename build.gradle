@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'cn.mccraft.pangu'
-version '1.5-SNAPSHOT'
+version '2.0'
 
 sourceCompatibility = 1.8
 
