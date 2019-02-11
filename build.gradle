@@ -21,17 +21,20 @@ configurations {
 }
 
 dependencies {
-    embed "com.github.trychen:ByteDataStream:1.2-SNAPSHOT"
-    embed "com.github.Mouse0w0:FastReflection:1.0.1"
     api "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
     api "com.comphenix.protocol:ProtocolLib:4.4.0"
-    configurations.api.extendsFrom(configurations.embed)
+    api "com.github.trychen:ByteDataStream:1.2-SNAPSHOT"
+    api "com.github.Mouse0w0:FastReflection:1.0.1"
+
+    embed "com.github.trychen:ByteDataStream:1.2-SNAPSHOT"
+    embed "com.github.Mouse0w0:FastReflection:1.0.1"
 }
 
-task embedJar(type: Jar, dependsOn: 'jar') {
-    from sourceSets.main.output
-    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+task embedJar(type: Jar) {
     classifier "packaged"
+
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+    with jar
 }
 
 artifacts {
