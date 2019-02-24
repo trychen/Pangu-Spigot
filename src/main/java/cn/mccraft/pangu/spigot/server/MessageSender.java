@@ -9,11 +9,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public interface MessageSender {
-    Set<String> REGISTERED_CHANNEL = new HashSet<>();
+    Map<String, RemoteProxy> PROXY_CACHE = new HashMap<>();
 
     static void out(Player player, String channel,  int id, Object... objects) {
         ByteArrayOutputStream b = new ByteArrayOutputStream();
@@ -72,11 +74,12 @@ public interface MessageSender {
     }
 
     static <T> T createProxy(Class<T> clazz, String channel) {
-        if (!REGISTERED_CHANNEL.contains(channel)) {
+        RemoteProxy proxy = PROXY_CACHE.get(channel);
+        if (proxy == null) {
             Bukkit.getMessenger().registerOutgoingPluginChannel(PanguSpigot.getInstance(), channel);
-            REGISTERED_CHANNEL.add(channel);
             PanguSpigot.getInstance().getLogger().info("成功注册对外通讯通道 " + channel);
+            PROXY_CACHE.put(channel, proxy = new RemoteProxy(channel));
         }
-        return (T) Proxy.newProxyInstance(MessageSender.class.getClassLoader(), new Class[]{clazz}, new RemoteProxy(channel));
+        return (T) Proxy.newProxyInstance(MessageSender.class.getClassLoader(), new Class[]{clazz}, proxy);
     }
 }
