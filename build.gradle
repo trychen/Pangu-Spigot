@@ -1,6 +1,5 @@
 plugins {
     id 'java-library'
-    id 'maven-publish'
 }
 
 group 'cn.mccraft.pangu'
@@ -15,13 +14,6 @@ repositories {
     maven { url "http://repo.dmulloy2.net/nexus/repository/public/" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/"}
     maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
-    maven {
-        url "https://ali-claydev-trychen.mineclay.cn/repository/maven-public/"
-        credentials {
-            username clayUsername
-            password clayPassword
-        }
-    }
 }
 
 configurations {
@@ -49,21 +41,3 @@ artifacts {
     archives embedJar
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact embedJar
-        }
-    }
-
-    repositories {
-        maven {
-            url = "https://ali-claydev-trychen.mineclay.cn/repository/maven-releases/"
-            credentials {
-                username clayUsername
-                password clayPassword
-            }
-        }
-    }
-}
