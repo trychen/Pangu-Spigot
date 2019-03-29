@@ -3,6 +3,7 @@ package cn.mccraft.pangu.spigot.client;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import com.github.mouse0w0.fastreflection.MethodAccessor;
 import com.trychen.bytedatastream.ByteSerialization;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
@@ -23,7 +24,7 @@ public class RemoteMessage {
         this.instance = instance;
         if (method.getParameterCount() > 0 && method.getGenericParameterTypes()[0] == Player.class) {
             withPlayer = true;
-            types = Arrays.copyOfRange(method.getGenericParameterTypes(), 1, method.getParameterTypes().length);
+            types = (Type[]) ArrayUtils.remove(method.getGenericParameterTypes(), 0);
         } else {
             withPlayer = false;
             types = method.getGenericParameterTypes();
