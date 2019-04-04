@@ -16,11 +16,11 @@ public class PanguSpigot extends JavaPlugin {
     public void onLoad() {
         instance = this;
         ByteSerializers.register();
-        JsonPersistence.INSTANCE.createGsonInstance();
     }
 
     @Override
     public void onEnable() {
+        JsonPersistence.INSTANCE.createGsonInstance();
         BridgeManager.INSTANCE.init();
     }
 }

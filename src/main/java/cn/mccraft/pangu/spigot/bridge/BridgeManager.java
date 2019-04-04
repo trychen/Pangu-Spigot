@@ -63,7 +63,6 @@ public enum  BridgeManager implements PluginMessageListener {
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
         try {
-            System.out.println(Arrays.toString(message));
             DataInputStream input = new DataInputStream(new ByteArrayInputStream(message));
 
             int id = input.readByte();
