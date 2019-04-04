@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.spigot.bridge;
 
 import cn.mccraft.pangu.spigot.Bridge;
+import cn.mccraft.pangu.spigot.PanguSpigot;
 import cn.mccraft.pangu.spigot.Remote;
 import cn.mccraft.pangu.spigot.data.Persistence;
 import cn.mccraft.pangu.spigot.server.MessageSender;
@@ -9,11 +10,13 @@ import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.logging.Level;
 
 public enum BridgeProxy implements InvocationHandler {
     INSTANCE;
@@ -21,12 +24,19 @@ public enum BridgeProxy implements InvocationHandler {
     @SuppressWarnings("Duplicates")
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+        if (method.isDefault()) {
+            PanguSpigot.getInstance().getLogger().log(Level.SEVERE, "default method isn't support in this version", new IllegalAccessException());
+            return null;
+        }
+
+        Bridge bridge = method.getAnnotation(Bridge.class);
+
+        if (bridge == null) return null;
+
         Type[] types = method.getGenericParameterTypes();
         Collection<Player> players = new HashSet<>();
         boolean addAllPlayers = true;
-
-        Bridge bridge = method.getAnnotation(Bridge.class);
-        if (bridge == null) return null;
 
         if (args.length > 0) {
             if (args[0] instanceof Player) {
