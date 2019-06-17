@@ -21,7 +21,6 @@ public enum ItemStackSerializer implements ByteSerializer<ItemStack>, ByteDeseri
 
     @Override
     public ItemStack deserialize(DataInput in) throws IOException {
-
         short type = in.readShort();
         if (type < 0) return new ItemStack(Material.AIR);
         byte amount = in.readByte();
@@ -37,7 +36,7 @@ public enum ItemStackSerializer implements ByteSerializer<ItemStack>, ByteDeseri
 
     @Override
     public void serialize(DataOutput out, ItemStack item) throws IOException {
-        if (item.getAmount() != 0 && item.getType() != null) {
+        if (item != null && item.getAmount() != 0 && item.getType() != null) {
             out.writeShort(item.getType().getId());
             out.writeByte(item.getAmount());
             out.writeShort(item.getDurability());
