@@ -20,7 +20,9 @@ public class PanguSpigot extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        JsonPersistence.INSTANCE.createGsonInstance();
         BridgeManager.INSTANCE.init();
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+            JsonPersistence.INSTANCE.createGsonInstance();
+        });
     }
 }

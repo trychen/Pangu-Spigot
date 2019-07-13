@@ -111,6 +111,6 @@ public enum  BridgeManager implements PluginMessageListener {
     }
 
     public <T> T createProxy(Class<T> clazz) {
-        return (T) Proxy.newProxyInstance(MessageSender.class.getClassLoader(), new Class[]{clazz}, BridgeProxy.INSTANCE);
+        return (T) Proxy.newProxyInstance(BridgeManager.class.getClassLoader(), new Class[]{clazz}, BridgeProxy.INSTANCE);
     }
 }

@@ -1,10 +1,12 @@
 package cn.mccraft.pangu.spigot.data.builtin;
 
-import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.BukkitConverters;
-import com.comphenix.protocol.wrappers.nbt.*;
+import com.comphenix.protocol.wrappers.nbt.NbtBase;
+import com.comphenix.protocol.wrappers.nbt.NbtFactory;
+import com.comphenix.protocol.wrappers.nbt.NbtType;
+import com.comphenix.protocol.wrappers.nbt.NbtWrapper;
 import com.comphenix.protocol.wrappers.nbt.io.NbtBinarySerializer;
 import com.trychen.bytedatastream.ByteDeserializer;
 import com.trychen.bytedatastream.ByteSerializer;
@@ -36,7 +38,7 @@ public enum ItemStackSerializer implements ByteSerializer<ItemStack>, ByteDeseri
 
     @Override
     public void serialize(DataOutput out, ItemStack item) throws IOException {
-        if (item != null && item.getAmount() != 0 && item.getType() != null) {
+        if (item != null && item.getAmount() != 0 && item.getType() != null && item.getType() != Material.AIR) {
             out.writeShort(item.getType().getId());
             out.writeByte(item.getAmount());
             out.writeShort(item.getDurability());
