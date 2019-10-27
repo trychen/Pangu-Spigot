@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id "maven-publish"
 }
 
 group 'cn.mccraft.pangu'
@@ -41,3 +42,21 @@ artifacts {
     archives embedJar
 }
 
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/trychen/Pangu-Spigot")
+            credentials {
+                username "$clayUsername"
+                password "$githubToken"
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
