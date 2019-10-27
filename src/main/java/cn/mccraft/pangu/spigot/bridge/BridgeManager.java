@@ -96,10 +96,6 @@ public enum  BridgeManager implements PluginMessageListener {
 
             DataUtils.writeVarInt(out, bytes.length);
             out.write(bytes);
-
-            for (byte aByte : bytes) {
-                out.writeByte(aByte);
-            }
         } catch (IOException e) {
             e.printStackTrace();
             return;
