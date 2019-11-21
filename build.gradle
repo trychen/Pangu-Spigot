@@ -1,10 +1,11 @@
 plugins {
     id 'java-library'
     id "maven-publish"
+    id "maven"
 }
 
 group 'cn.mccraft.pangu'
-version '3.5'
+version '3.6'
 
 sourceCompatibility = 1.8
 
@@ -24,7 +25,7 @@ configurations {
 dependencies {
     api "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
     api "com.comphenix.protocol:ProtocolLib:4.4.0"
-    api "com.github.trychen:ByteDataStream:1.6"
+    api "com.github.trychen:ByteDataStream:1.7"
     api "com.github.Mouse0w0:FastReflection:1.0.1"
 
     embed "com.github.trychen:ByteDataStream:1.6"
@@ -57,6 +58,19 @@ publishing {
     publications {
         gpr(MavenPublication) {
             from(components.java)
+        }
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "https://maven.mineclay.cn/repository/zhua-release/") {
+                authentication(userName: "$clayUsername", password: "$clayPassword")
+            }
+            pom.version = "$project.version"
+            pom.artifactId = "$project.name"
+            pom.groupId = "$project.group"
         }
     }
 }
