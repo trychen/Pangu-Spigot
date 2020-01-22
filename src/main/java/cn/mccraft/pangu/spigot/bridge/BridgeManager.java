@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 public enum  BridgeManager implements PluginMessageListener {
     INSTANCE;
@@ -54,8 +55,9 @@ public enum  BridgeManager implements PluginMessageListener {
 
             try {
                 solutions.put(bridge.value(), new Solution(object, method, persistences.get(bridge.persistence())));
+                PanguSpigot.debug("Registered @Bridge Receiver with key " + bridge.value() + " for " + method.toGenericString());
             } catch (Exception e) {
-                e.printStackTrace();
+                PanguSpigot.getInstance().getLogger().log(Level.SEVERE, "Error while register @Bridge for " + method.toGenericString(), e);
             }
         }
     }
@@ -76,10 +78,13 @@ public enum  BridgeManager implements PluginMessageListener {
 
             Solution solution = solutions.get(key);
             if (solution != null) {
+                PanguSpigot.debug("收到 @Bridge 信息 " + key + "，解决方案 " + solution.getMethod().toGenericString());
                 solution.solve(player, data);
+            } else {
+                PanguSpigot.debug("收到 @Bridge 信息 " + key + "，找不到对应的解决方案!");
             }
         } catch (Exception e){
-            e.printStackTrace();
+            PanguSpigot.getInstance().getLogger().log(Level.SEVERE, "Error while solving @Bridge for Player " + player.getName(), e);
         }
     }
 

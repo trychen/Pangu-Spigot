@@ -3,6 +3,7 @@ package cn.mccraft.pangu.spigot.bridge;
 import cn.mccraft.pangu.spigot.Bridge;
 import cn.mccraft.pangu.spigot.PanguSpigot;
 import cn.mccraft.pangu.spigot.data.Persistence;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -30,23 +31,24 @@ public enum BridgeProxy implements InvocationHandler {
         if (bridge == null) return null;
 
         Type[] types = method.getGenericParameterTypes();
-        Collection<Player> players = new HashSet<>();
+        Collection<Player> players = null;
         boolean addAllPlayers = true;
 
         if (args.length > 0) {
             if (args[0] instanceof Player) {
-                players.add((Player) args[0]);
+                players = Collections.singleton((Player) args[0]);
                 addAllPlayers = false;
             } else if (args[0] instanceof Collection) {
                 if (Player.class.isAssignableFrom((Class<?>) ((ParameterizedType)types[0]).getActualTypeArguments()[0])) {
-                    players.addAll((Collection<? extends Player>) args[0]);
+                    players = (Collection<Player>) args[0];
                     addAllPlayers = false;
                 }
             } else if (args[0].getClass().isArray() && Player.class.isAssignableFrom(args.getClass().getComponentType())) {
-                Collections.addAll(players, (Player[]) args[0]);
+                players = Sets.newHashSet((Player[]) args[0]);
                 addAllPlayers = false;
             }
         }
+
         String[] names = Arrays.stream(method.getParameters()).map(Parameter::getName).toArray(String[]::new);
 
         if (addAllPlayers) {
@@ -56,6 +58,8 @@ public enum BridgeProxy implements InvocationHandler {
             types = (Type[]) ArrayUtils.remove(types, 0);
             names = (String[]) ArrayUtils.remove(names, 0);
         }
+
+        if (players == null || players.isEmpty()) return null;
 
         Persistence persistence = BridgeManager.INSTANCE.getPersistence(bridge.persistence());
         byte[] bytes = persistence.serialize(names, args, types, true);

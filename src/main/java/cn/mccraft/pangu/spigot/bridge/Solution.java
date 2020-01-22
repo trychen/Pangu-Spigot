@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.spigot.bridge;
 
+import cn.mccraft.pangu.spigot.PanguSpigot;
 import cn.mccraft.pangu.spigot.data.Persistence;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import com.github.mouse0w0.fastreflection.MethodAccessor;
@@ -41,5 +42,10 @@ public class Solution {
             objects = ArrayUtils.add(objects, 0, player);
         }
         methodAccessor.invoke(instance, objects);
+        PanguSpigot.debug("成功执行 @Bridge " + method.toGenericString());
+    }
+
+    public Method getMethod() {
+        return method;
     }
 }
