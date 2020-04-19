@@ -1,9 +1,14 @@
 package cn.mccraft.pangu.spigot.data;
 
+import cn.mccraft.pangu.spigot.data.builtin.ItemStackSerializer;
+import cn.mccraft.pangu.spigot.data.builtin.NBTSerializer;
+import com.comphenix.protocol.utility.MinecraftReflection;
+import com.comphenix.protocol.wrappers.nbt.NbtCompound;
 import com.google.gson.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -18,6 +23,11 @@ public enum JsonPersistence implements Persistence {
 
     public void createGsonInstance() {
         GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(ItemStack.class, ItemStackSerializer.INSTANCE);
+        builder.registerTypeAdapter(MinecraftReflection.getCraftItemStackClass(), ItemStackSerializer.INSTANCE);
+        builder.registerTypeAdapter(MinecraftReflection.getItemStackClass(), ItemStackSerializer.INSTANCE);
+        builder.registerTypeAdapter(NbtCompound.class, NBTSerializer.INSTANCE);
+
         Bukkit.getPluginManager().callEvent(new GsonCreateEvent(builder));
         this.gson = builder.create();
     }
