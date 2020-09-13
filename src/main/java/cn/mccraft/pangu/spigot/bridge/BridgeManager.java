@@ -11,6 +11,7 @@ import cn.mccraft.pangu.spigot.data.JsonPersistence;
 import cn.mccraft.pangu.spigot.data.Persistence;
 import cn.mccraft.pangu.spigot.server.MessageSender;
 import cn.mccraft.pangu.spigot.server.RemoteProxy;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -20,10 +21,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 public enum  BridgeManager implements PluginMessageListener {
@@ -89,9 +87,13 @@ public enum  BridgeManager implements PluginMessageListener {
     }
 
     public void send(Collection<Player> players, String key, byte[] bytes) {
+        if (bytes.length > 30000) {
+            sendMultiPart(players, key, bytes);
+            return;
+        }
+
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(b);
-
         try {
             out.writeByte(0x01);
 
@@ -108,6 +110,38 @@ public enum  BridgeManager implements PluginMessageListener {
 
         for (Player player : players) {
             player.sendPluginMessage(PanguSpigot.getInstance(), "pangu", b.toByteArray());
+        }
+    }
+
+    public void sendMultiPart(Collection<Player> players, String key, byte[] bytes) {
+        short total = (short) ((bytes.length / 30000) + (bytes.length % 30000 > 0 ? 1 : 0));
+        UUID id = UUID.randomUUID();
+
+        for (short i = 0; i < total; i++) try {
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(b);
+
+            out.writeByte(0x03);
+
+            out.writeLong(id.getMostSignificantBits());
+            out.writeLong(id.getLeastSignificantBits());
+            out.writeShort(total);
+            out.writeShort(i);
+
+            byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
+            DataUtils.writeVarInt(out, keyBytes.length);
+            out.write(keyBytes);
+
+            byte[] sub = ArrayUtils.subarray(bytes, i * 30000, Math.min(bytes.length, (i + 1) * 30000));
+            DataUtils.writeVarInt(out, sub.length);
+            out.write(sub);
+
+            for (Player player : players) {
+                player.sendPluginMessage(PanguSpigot.getInstance(), "pangu", b.toByteArray());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
         }
     }
 
