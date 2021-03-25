@@ -15,4 +15,9 @@ public @interface Bridge {
     String value();
 
     Class<? extends Persistence> persistence() default JsonPersistence.class;
+
+    /**
+     * Enable GZip for JsonPersistence
+     */
+    boolean compress() default false;
 }

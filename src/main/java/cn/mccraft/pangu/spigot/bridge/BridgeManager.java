@@ -5,10 +5,7 @@ import cn.mccraft.pangu.spigot.Bridge;
 import cn.mccraft.pangu.spigot.PanguSpigot;
 import cn.mccraft.pangu.spigot.Remote;
 import cn.mccraft.pangu.spigot.client.RemoteMessage;
-import cn.mccraft.pangu.spigot.data.ByteStreamPersistence;
-import cn.mccraft.pangu.spigot.data.DataUtils;
-import cn.mccraft.pangu.spigot.data.JsonPersistence;
-import cn.mccraft.pangu.spigot.data.Persistence;
+import cn.mccraft.pangu.spigot.data.*;
 import cn.mccraft.pangu.spigot.server.MessageSender;
 import cn.mccraft.pangu.spigot.server.RemoteProxy;
 import org.apache.commons.lang.ArrayUtils;
@@ -67,19 +64,24 @@ public enum  BridgeManager implements PluginMessageListener {
 
             int id = input.readByte();
 
-            byte[] keyBytes = new byte[DataUtils.readVarInt(input)];
-            input.read(keyBytes);
-            String key = new String(keyBytes, StandardCharsets.UTF_8);
+            // Basic Packet
+            if (id == 0 || id == 4) {
+                byte[] keyBytes = new byte[DataUtils.readVarInt(input)];
+                input.read(keyBytes);
+                String key = new String(keyBytes, StandardCharsets.UTF_8);
 
-            byte[] data = new byte[DataUtils.readVarInt(input)];
-            input.read(data);
+                byte[] data = new byte[DataUtils.readVarInt(input)];
+                input.read(data);
 
-            Solution solution = solutions.get(key);
-            if (solution != null) {
-                PanguSpigot.debug("收到 @Bridge 信息 " + key + "，解决方案 " + solution.getMethod().toGenericString());
-                solution.solve(player, data);
-            } else {
-                PanguSpigot.debug("收到 @Bridge 信息 " + key + "，找不到对应的解决方案!");
+                if (id == 4) data = GZIPUtils.uncompress(data);
+
+                Solution solution = solutions.get(key);
+                if (solution != null) {
+                    PanguSpigot.debug("收到 @Bridge 信息 " + key + "，解决方案 " + solution.getMethod().toGenericString());
+                    solution.solve(player, data);
+                } else {
+                    PanguSpigot.debug("收到 @Bridge 信息 " + key + "，找不到对应的解决方案!");
+                }
             }
         } catch (Exception e){
             PanguSpigot.getInstance().getLogger().log(Level.SEVERE, "Error while solving @Bridge for Player " + player.getName(), e);
@@ -87,6 +89,11 @@ public enum  BridgeManager implements PluginMessageListener {
     }
 
     public void send(Collection<Player> players, String key, byte[] bytes) {
+        send(players, key, bytes, bytes.length > 2000);
+    }
+
+
+    public void send(Collection<Player> players, String key, byte[] bytes, boolean compress) {
         if (bytes.length > 30000) {
             sendMultiPart(players, key, bytes);
             return;
@@ -95,14 +102,15 @@ public enum  BridgeManager implements PluginMessageListener {
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(b);
         try {
-            out.writeByte(0x01);
+            out.writeByte(compress ? 0x05 : 0x01);
 
             byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
             DataUtils.writeVarInt(out, keyBytes.length);
             out.write(keyBytes);
 
-            DataUtils.writeVarInt(out, bytes.length);
-            out.write(bytes);
+            byte[] write = compress ? GZIPUtils.compress(bytes) : bytes;
+            DataUtils.writeVarInt(out, write.length);
+            out.write(write);
         } catch (IOException e) {
             e.printStackTrace();
             return;

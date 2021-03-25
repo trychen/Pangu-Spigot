@@ -64,7 +64,7 @@ public enum BridgeProxy implements InvocationHandler {
         Persistence persistence = BridgeManager.INSTANCE.getPersistence(bridge.persistence());
         byte[] bytes = persistence.serialize(names, args, types, true);
 
-        BridgeManager.INSTANCE.send(players, bridge.value(), bytes);
+        BridgeManager.INSTANCE.send(players, bridge.value(), bytes, bridge.compress() && bytes.length > 1500);
         return null;
     }
 }
